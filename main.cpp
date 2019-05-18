@@ -4,6 +4,7 @@
 #include <conio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <windows.h>
 
 using namespace std;
 
@@ -16,58 +17,28 @@ struct Carrera{
 	int codigoCarrera;
 	char nombreCarrera[25];
 };
-struct CodigoCarrera{
+struct Materia{
 	int numSemestre;
 	int codMateria;
 	char nomMareria[40];
 	int UC;
 };
 
+void gotoxy(int,int);
+void Inscripcion(int);
+void ImprimirPensum(int);
+void marco();
+
 int main(int argc, char** argv) {
 	
-	fstream file,bin;
-	string texto;
-	char linea[40];
-	char *token;
-	
-//	file.open("4312.txt",ios::in);
-	bin.open("4178.dat",ios::binary | ios::in);
-	
-	
-	while(true){
-		CodigoCarrera cod;
-		
-		bin.read((char*)&cod,sizeof(CodigoCarrera));
-		
-		if(bin.eof()) break;
-		cout<<cod.numSemestre<<endl<<cod.codMateria<<endl<<cod.nomMareria<<endl<<cod.UC<<endl<<endl;
-		getch();
-	}
-	
-	/*
-	while(true){
-		CodigoCarrera cod;
-		getline(file,texto);
-		strcpy(linea,texto.c_str());
-		
-		token=strtok(linea,",");
-		cod.numSemestre=atoi(token);
-//		if(cod.numSemestre == 0) cod.numSemestre=1;
-		token=strtok(NULL,",");
-		cod.codMateria = atoi(token);
-		token=strtok(NULL,",");
-		strcpy(cod.nomMareria,token);
-		token=strtok(NULL,",");
-		cod.UC = atoi(token);
-		
-		bin.write((char*)&cod,sizeof(CodigoCarrera));
-		
-		if(file.eof()) break;
-	}
-	file.close();
-	bin.close();
-	*/
-	/*
+	int cedula;
+
+	cout<<"Ingrese la cedula de un alumno que quiera inscribir: ";
+	cin>>cedula;
+	ImprimirPensum(cedula);
+
+
+/*
 	fstream file1,file2;
 	
 	file1.open("Alumnos.dat",ios::binary | ios::in);
@@ -88,6 +59,133 @@ int main(int argc, char** argv) {
 		file2.close();
 	}
 	file1.close();
-	*/
+*/	
 	return 0;
+}
+
+
+void Inscripcion(int cedula){
+	
+	int materia;
+	char cod[10];
+	
+	string texto; 
+	int opcion;
+	
+	fstream alumnos;
+	fstream carrera;
+	fstream materias;
+	fstream inscritos;
+	
+	alumnos.open("Alumnos.dat",ios::binary | ios::in);
+	
+	while(true){
+		Alumnos a;
+		alumnos.read((char*)&a,sizeof(Alumnos));
+		if(alumnos.eof())break;
+		if(a.cedula == cedula){
+			while(true){
+				cout<<endl<<"En que materia desea Inscribir al alumno "<<a.nombre<<endl<<"Materia: ";
+				cin>>materia;
+				itoa(a.codigoCarrera,cod,10);
+				strcat(cod, ".dat");
+				materias.open(cod,ios::binary | ios::in);
+				while(true){
+					Materia m;
+					materias.read((char*)&m,sizeof(Materia));
+					if(materias.eof()){
+						cout<<endl<<"La materia no ha sido encontrada...";	
+					}				
+					if(m.codMateria%100 == materia){
+						inscritos.open("inscritos.txt",ios::in|ios::app);
+						
+						
+						
+						
+						cout<<"Inscrito en la Materia: "<<m.nomMareria<<endl<<endl;
+						inscritos<<materia;
+						inscritos.close();
+					}
+				}
+				materias.close();
+				do{
+					cout<<endl<<"Desea Inscribir otra Materia? 1[SI] | 2[NO]"<<endl<<"Opcion: ";
+					cin>>opcion;
+				} while(opcion<1||opcion>2);
+				if(opcion==2) break;
+			}
+			break;
+		}
+	}	
+}
+
+void ImprimirPensum(int codigo){
+	
+	system("cls");
+	
+	fstream pensum;
+	int y=4;
+	
+	char cod[4];
+	
+	itoa(codigo,cod,10);
+	strcat(cod, ".dat");
+	pensum.open(cod,ios::binary | ios::in);
+	
+	gotoxy(1,2);
+	cout<<"Semestre";
+	gotoxy(11,2);
+	cout<<"Codigo";
+	gotoxy(30,2);
+	cout<<"Materia";
+	gotoxy(55,2);
+	cout<<"Unidades de Credito";
+	
+	while(true){
+		Materia mat;
+		pensum.read((char*)&mat,sizeof(Materia));
+		if(pensum.eof()) break;
+		gotoxy(5,y);
+		cout<<mat.numSemestre;
+		gotoxy(11,y);
+		cout<<mat.codMateria;
+		gotoxy(22,y);
+		cout<<mat.nomMareria;
+		gotoxy(65,y);
+		cout<<mat.UC;
+		y++;
+	}
+	marco();
+	gotoxy(0,48);
+}
+
+void marco(){
+	for(int i=0;i<42;i++){
+		gotoxy(0,i+2);
+		cout<<"|";
+	}
+	for(int i=0;i<42;i++){
+		gotoxy(10,i+2);
+		cout<<"|";
+	}
+	for(int i=0;i<42;i++){
+		gotoxy(20,i+2);
+		cout<<"|";
+	}
+	for(int i=0;i<42;i++){
+		gotoxy(54,i+2);
+		cout<<"|";
+	}
+	for(int i=0;i<42;i++){
+		gotoxy(74,i+2);
+		cout<<"|";
+	}
+}
+
+void gotoxy(int x,int y){
+	HANDLE hcon = GetStdHandle (STD_OUTPUT_HANDLE);
+	COORD dwpos;
+	dwpos.X=x;
+	dwpos.Y=y;
+	SetConsoleCursorPosition(hcon,dwpos);
 }
