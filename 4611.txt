@@ -1,6 +1,6 @@
 1,461110,Matematica I,4
 1,461111,Computacion I,3
-1,461112,Introduccion,1
+1,461112,Introduccion a la Informatica,1
 1,461113,Matematica discreta,4
 2,461121,Fisica I,3
 2,461122,Matematica II,4

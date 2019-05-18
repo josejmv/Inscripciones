@@ -16,47 +16,78 @@ struct Carrera{
 	int codigoCarrera;
 	char nombreCarrera[25];
 };
+struct CodigoCarrera{
+	int numSemestre;
+	int codMateria;
+	char nomMareria[40];
+	int UC;
+};
 
 int main(int argc, char** argv) {
 	
-	int cont=0;
-	fstream file,file2;
+	fstream file,bin;
+	string texto;
+	char linea[40];
+	char *token;
 	
-	file2.open("Alumnos.dat",ios::binary | ios::in);
+//	file.open("4312.txt",ios::in);
+	bin.open("4178.dat",ios::binary | ios::in);
 	
-	while(cont<10){
-		Alumnos c;
-		file2.read((char*)&c,sizeof(Alumnos));
-		if(file2.eof()) break;
-		cout<<"Nombre: "<<c.nombre<<endl<<"Cedula: "<<c.cedula<<endl<<"CodigoCarrera: "<<c.codigoCarrera<<endl;
-		file.open("Carreras.dat", ios::binary | ios::in);
-		while(true){
-			Carrera a;
-			file.read((char*)&a,sizeof(Carrera));
-			if(file.eof()) break;
-			if(c.codigoCarrera == a.codigoCarrera)
-				cout<<"NombreCarrera: "<<a.nombreCarrera<<endl<<endl;
-		}
-		file.close();
-		cont++;
+	
+	while(true){
+		CodigoCarrera cod;
+		
+		bin.read((char*)&cod,sizeof(CodigoCarrera));
+		
+		if(bin.eof()) break;
+		cout<<cod.numSemestre<<endl<<cod.codMateria<<endl<<cod.nomMareria<<endl<<cod.UC<<endl<<endl;
+		getch();
 	}
-	file2.close();
-	
 	
 	/*
+	while(true){
+		CodigoCarrera cod;
+		getline(file,texto);
+		strcpy(linea,texto.c_str());
+		
+		token=strtok(linea,",");
+		cod.numSemestre=atoi(token);
+//		if(cod.numSemestre == 0) cod.numSemestre=1;
+		token=strtok(NULL,",");
+		cod.codMateria = atoi(token);
+		token=strtok(NULL,",");
+		strcpy(cod.nomMareria,token);
+		token=strtok(NULL,",");
+		cod.UC = atoi(token);
+		
+		bin.write((char*)&cod,sizeof(CodigoCarrera));
+		
+		if(file.eof()) break;
+	}
+	file.close();
+	bin.close();
+	*/
+	/*
+	fstream file1,file2;
 	
-	LEER DATA de Alumnos
-	
-	fstream file;
-	
-	file.open("Alumnos.dat", ios::binary | ios::in);
+	file1.open("Alumnos.dat",ios::binary | ios::in);
 	
 	while(true){
 		Alumnos a;
-		file.read((char*)&a,sizeof(Alumnos));
-		if(file.eof()) break;
-		cout<<"nombre: "<<a.nombre<<endl<<"cedula: "<<a.cedula<<endl<<"codigo: "<<a.codigoCarrera<<endl<<endl;
+		file1.read((char*)&a,sizeof(Alumnos));
+		if(file1.eof()) break;
+		cout<<"Nombre: "<<a.nombre<<endl<<"Cedula: "<<a.cedula<<endl<<"CodigoCarrera: "<<a.codigoCarrera<<endl;
+		file2.open("Carreras.dat", ios::binary | ios::in);
+		while(true){
+			Carrera c;
+			file2.read((char*)&c,sizeof(Carrera));
+			if(file2.eof()) break;
+			if(a.codigoCarrera == c.codigoCarrera)
+				cout<<"NombreCarrera: "<<c.nombreCarrera<<endl<<endl;
+		}
+		file2.close();
 	}
+	file1.close();
 	*/
 	return 0;
 }

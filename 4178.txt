@@ -1,6 +1,6 @@
-1,417810,Matematica I,4
+﻿1,417810,Matematica I,4
 1,417811,Lenguaje,3
-1,417812,Introduccion,1
+1,417812,Introduccion a Ing Civil,1
 1,417813,Dibujo,4
 2,417821,Fisica I,5
 2,417822,Matematica II,4
@@ -9,7 +9,7 @@
 3,417825,Algebra,3
 3,417826,Matematica III,4
 3,417827,Fisica II,4
-3,417828,Diseño,3
+3,417828,Diseno,3
 4,417829,Proyectos,2
 4,417830,Estructuras,3
 4,417831,Matematica IV,4

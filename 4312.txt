@@ -1,0 +1,40 @@
+1,417810,Matematica I,4
+1,417811,Lenguaje,3
+1,417812,Introduccion a Ing Ambiental,1
+1,417813,Biologia,4
+2,417821,Fisica I,4
+2,417822,Matematica II,4
+2,417823,Quimica General I,3
+2,417824,Laboratorio de Quimica I,1
+3,417825,Quimica General II,3
+3,417826,Matematica III,4
+3,417827,Fundamentos de Ing Ambiental I,3
+3,417828,Mecanica I,2
+4,417829,Fundamentos de Ing Ambiental II,4
+4,417830,Fisica II,3
+4,417831,Matematica IV,4
+4,417832,Estadistica,1
+5,417833,Procesos,4
+5,417834,Mecanica de Fluidos,3
+5,417835,Metodologia Ambiental,2
+5,417836,Quimica Organica,3
+6,417837,Laboratorio Ambiental I,3
+6,417838,Economia,3
+6,417839,Hidrologia, 3
+6,417840,Geologia y suelos,2
+7,417841,Legislacion Ambiental,2
+7,417842,Ciencia y Sociedad,2
+7,417843,Conservacion de Suelos y Agua,4
+7,417844,Contaminacion de la Atmosfera,3
+8,417845,Energias Alternativas,3
+8,417846,Impacto Ambiental,3
+8,417847,Procesos Ambientales,3
+8,417848,Abastecimiento de Agua,3
+9,417849,Gestion Ambiental,3
+9,417850,Laboratorio Ambiental II,3
+9,417851,Formulacion de Proyectos,3
+9,417852,Metodologia de la Investigacion,2
+10,417853,TAP,12
+10,417854,Proyecto especial,12
+10,417855,Pasantia,12
+10,417856,Graduacion,6
