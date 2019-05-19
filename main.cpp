@@ -42,13 +42,14 @@ int main(int argc, char** argv) {
 	int cedula;
 	int codigo;
 	int opcion;
-	
+
+/*	
 //	LISTA DE ALUMNOS INSCRITOS EN UNA MATERIA LISTO
 
 	cout<<"Ingrese el codigo de la materia: ";
 	cin>>codigo;
 	InscripcionMateria(codigo);
-	
+*/	
 
 	
 /*	
@@ -69,13 +70,13 @@ int main(int argc, char** argv) {
 */
 
 	
-/*	
+	
 //	IMPRIMIR PENSUM LISTO
 	
 	cout<<"Ingrese el codigo de la carrera: ";
 	cin>>codigo;
 	ImprimirPensum(codigo);
-*/	
+	
 
 	
 /*	
@@ -196,6 +197,8 @@ void ImprimirPensum(int codigo){
 	{
 		cout<<".....Carrera NO encontrada.....";
 		getch();
+		pensum.close();
+		exit(1);
 	}
 	else{
 		gotoxy(1,2);
