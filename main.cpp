@@ -23,6 +23,11 @@ struct Materia{
 	char nomMareria[40];
 	int UC;
 };
+struct Inscritos{
+	int cedula;
+	char codMaterias[120];
+	int totalUC;
+};
 
 void gotoxy(int,int);
 void Inscripcion(int);
@@ -31,11 +36,25 @@ void marco();
 
 int main(int argc, char** argv) {
 	
+	/*
 	int cedula;
 
 	cout<<"Ingrese la cedula de un alumno que quiera inscribir: ";
 	cin>>cedula;
-	ImprimirPensum(cedula);
+	Inscripcion(cedula);
+	*/
+	
+	
+	Inscritos i;
+	fstream file;
+	
+	file.open("Inscritos.dat",ios::binary | ios::in);
+	while(true){
+		file.read((char*)&i,sizeof(Inscritos));
+		if(file.eof())break;	
+		cout<<endl<<"Cedula: "<<i.cedula<<endl<<"CodigoMaterias: "<<i.codMaterias<<endl<<"Total UC: "<<i.totalUC<<endl;
+	}
+	
 
 
 /*
@@ -67,9 +86,10 @@ int main(int argc, char** argv) {
 void Inscripcion(int cedula){
 	
 	int materia;
+	char mat[3];
 	char cod[10];
+	int maxUC=0;
 	
-	string texto; 
 	int opcion;
 	
 	fstream alumnos;
@@ -84,27 +104,32 @@ void Inscripcion(int cedula){
 		alumnos.read((char*)&a,sizeof(Alumnos));
 		if(alumnos.eof())break;
 		if(a.cedula == cedula){
+			Inscritos inscrito;
 			while(true){
 				cout<<endl<<"En que materia desea Inscribir al alumno "<<a.nombre<<endl<<"Materia: ";
+				strcpy(mat,"");
 				cin>>materia;
 				itoa(a.codigoCarrera,cod,10);
 				strcat(cod, ".dat");
 				materias.open(cod,ios::binary | ios::in);
 				while(true){
 					Materia m;
-					materias.read((char*)&m,sizeof(Materia));
-					if(materias.eof()){
-						cout<<endl<<"La materia no ha sido encontrada...";	
-					}				
+					materias.read((char*)&m,sizeof(Materia));				
+					if(materias.eof()) break;
 					if(m.codMateria%100 == materia){
-						inscritos.open("inscritos.txt",ios::in|ios::app);
-						
-						
-						
-						
-						cout<<"Inscrito en la Materia: "<<m.nomMareria<<endl<<endl;
-						inscritos<<materia;
-						inscritos.close();
+						itoa(materia,mat,10);
+						maxUC+=m.UC;
+						if(maxUC<=12){
+							cout<<endl<<"inscrito en la materia: "<<m.nomMareria<<endl;
+							cout<<maxUC<<endl;
+							strcat(inscrito.codMaterias,mat);
+							break;
+						}
+						else if(maxUC>12){
+							cout<<endl<<"...Limite de UC Excedido..."<<endl;
+							maxUC-=m.UC;
+							break;
+						}
 					}
 				}
 				materias.close();
@@ -112,7 +137,20 @@ void Inscripcion(int cedula){
 					cout<<endl<<"Desea Inscribir otra Materia? 1[SI] | 2[NO]"<<endl<<"Opcion: ";
 					cin>>opcion;
 				} while(opcion<1||opcion>2);
-				if(opcion==2) break;
+				if(opcion==2){
+					
+					inscrito.cedula=a.cedula;
+					inscrito.totalUC=maxUC;
+					
+					inscritos.open("Inscritos.dat",ios::binary | ios::app);
+					inscritos.write((char*)&inscrito,sizeof(Inscritos));
+					inscritos.close();
+					
+					cout<<endl<<"Cedula: "<<inscrito.cedula<<endl<<"CodigoMaterias: "<<inscrito.codMaterias<<endl<<"Total UC: "<<inscrito.totalUC<<endl;
+					cout<<endl<<".....Inscripcion realizada Exitosamente, pulse cualquier tecla....."<<endl;
+					getch();
+					break;
+				}
 			}
 			break;
 		}
@@ -131,6 +169,7 @@ void ImprimirPensum(int codigo){
 	itoa(codigo,cod,10);
 	strcat(cod, ".dat");
 	pensum.open(cod,ios::binary | ios::in);
+	
 	
 	gotoxy(1,2);
 	cout<<"Semestre";
