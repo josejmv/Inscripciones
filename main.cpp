@@ -43,7 +43,7 @@ int main(int argc, char** argv) {
 	int codigo;
 	int opcion;
 
-/*	
+/*
 //	LISTA DE ALUMNOS INSCRITOS EN UNA MATERIA LISTO
 
 	cout<<"Ingrese el codigo de la materia: ";
@@ -70,13 +70,13 @@ int main(int argc, char** argv) {
 */
 
 	
-	
+/*	
 //	IMPRIMIR PENSUM LISTO
 	
 	cout<<"Ingrese el codigo de la carrera: ";
 	cin>>codigo;
 	ImprimirPensum(codigo);
-	
+*/	
 
 	
 /*	
@@ -458,7 +458,7 @@ void InscripcionMateria(int codigo){
 				break;
 			}
 			if(m.codMateria == codigo){
-				cout<<"Alumnos que inscribieron la materia "<<m.nomMareria<<endl<<endl;
+				cout<<"Alumnos que inscribieron la materia \""<<m.nomMareria<<"\""<<endl<<endl;
 				ins.open("Inscritos.dat",ios::binary | ios::in);
 				while(true){
 					ins.read((char*)&i,sizeof(Inscritos));
@@ -477,8 +477,6 @@ void InscripcionMateria(int codigo){
 							while(true){
 								alum.read((char*)&a,sizeof(Alumnos));
 								if(alum.eof()){
-									cout<<"Cedula: NULL"<<endl;
-									cout<<"Nombre: NULL"<<endl<<endl;
 									break;
 								}
 								if(i.cedula == a.cedula && a.codigoCarrera == m.codMateria/100){
