@@ -31,20 +31,15 @@ struct Inscritos{
 
 class Principal{
 	public:
-	void Agregar(bool alumno);
-	void Inscripcion(int cedula);
-	void ImprimirPensum(int codigo);
-	void Consultar(bool alumno);
-	void ReporteInscripcion(int cedula);
-	void InscripcionMateria(int codigo);
+	void Agregar(bool);
+	void Inscripcion(int);
+	void ImprimirPensum(int);
+	void Consultar(bool);
+	void ReporteInscripcion(int);
+	void InscripcionMateria(int);
 };
 
 void gotoxy(int,int);
-void Inscripcion(int);
-void Consultar(bool);
-void ReporteInscripcion(int);
-void InscripcionMateria(int);
-void ImprimirPensum(int);
 void marco(char*);
 
 int main(int argc, char** argv) {
@@ -53,60 +48,6 @@ int main(int argc, char** argv) {
 	int opcion;
 
 	Principal p;
-	p.ImprimirPensum(46112);
-	
-//	marco("46112.dat");
-	
-
-/*
-//	LISTA DE ALUMNOS INSCRITOS EN UNA MATERIA LISTO
-
-	cout<<"Ingrese el codigo de la materia: ";
-	cin>>codigo;
-	InscripcionMateria(codigo);
-*/	
-
-	
-/*	
-//	REPORTE DE INSCRIPCION LISTO
-
-	cout<<"Ingrese el numero de cedula del Alumno: ";
-	cin>>cedula;
-	ReporteInscripcion(cedula);
-*/	
-
-	
-/*
-//	INSCRIPCION LISTO
-	
-	cout<<"Ingrese el numero de cedula del Alumno a inscribir: ";
-	cin>>cedula;
-	Inscripcion(cedula);
-*/
-
-	
-/*	
-//	IMPRIMIR PENSUM LISTO
-	
-	cout<<"Ingrese el codigo de la carrera: ";
-	cin>>codigo;
-	ImprimirPensum(codigo);
-*/	
-
-	
-/*	
-//	CONSULTAR LISTO
-//	FALTA AGREGAR ALUMNO NUEVO Y MATERIA NUEVA
-	
-	cout<<"1: Consultar alumno"<<endl;
-	cout<<"2: Consultar Materia"<<endl;
-	cout<<"Opcion: ";
-	cin>>opcion;
-	if(opcion==1)
-		Consultar(true);
-	else
-		Consultar(false);
-*/	
 	
 	return 0;
 }
@@ -119,34 +60,43 @@ void Principal::Agregar(bool alumno ){ //FUNCION DE AGREGAR ALUMNO O MATERIA
 		Alumnos a;		
 		file1.open("Alumnos.dat",ios::binary | ios::app);
 		
-		cout<<"ingrese la cedula del alumno"<<endl;
+		cout<<"ingrese la cedula del alumno a inscribir"<<endl;
 		cin>>a.cedula;
 		cout<<"ingrese el nombre del alumno"<<endl;
 		fflush(stdin);
 		gets(a.nombre);
 		cout<<"ingrese el codigo de la carrera del alumno"<<endl;
+		fflush(stdin);
 		cin>>a.codigoCarrera;
 		file1.write((char*)&a,sizeof(Alumnos));
 		file1.close();
+		cout<<endl<<"Alumno agregado con Exito . . ."<<endl<<endl;
+		system("pause");
 	}else{
 		int codigo;
 		Materia m;
 		fstream file2;
 		fstream file3;
-		char aux[50];
+		int codMateria;
+		char aux[30];
+		char aux2[30];
+		char aux3[30];
+		char cod[30];
+		strcpy(cod,"");
 		
 		file2.open("Carreras.dat", ios::binary | ios::in);		
 		cout<<"ingrese el codigo de la carrera: ";
 		cin>>codigo;
 		itoa(codigo,aux,10);
+		itoa(codigo,aux2,10);
 		strcat(aux,".dat");
 		while(true){
 			Carrera c;
 			
 			file2.read((char*)&c,sizeof(Carrera));
 			if(file2.eof()){
-				cout<<".....Esta carrera no existe, no se puede inscribir la materia....."<<endl;
-				getch();
+				cout<<endl<<"Esta carrera no existe, no se puede inscribir la materia . . ."<<endl;
+				system("pause");
 				break;
 			}
 			if(c.codigoCarrera == codigo){
@@ -154,15 +104,22 @@ void Principal::Agregar(bool alumno ){ //FUNCION DE AGREGAR ALUMNO O MATERIA
 				cout<<"ingrese el numero de semestre de la materia: ";
 				cin>>m.numSemestre;
 				cout<<"ingrese el codigo de la materia: ";
-				cin>>m.codMateria;
+				cin>>codMateria;
+				itoa(codMateria,aux3,10);
+				strcat(cod,aux2);
+				strcat(cod,aux3);
+				m.codMateria = atoi(cod);
 				cout<<"ingrese el nombre de la materia: ";
 				fflush(stdin);
 				cin>>m.nomMareria;
 				cout<<"ingrese el numero de UC: ";
+				fflush(stdin);
 				cin>>m.UC;
 								
 				file3.write((char*)&m,sizeof(Materia));
 				file3.close();
+				cout<<endl<<"Materia agregada con Exito . . ."<<endl;
+				system("pause");
 				break;
 			}
 		}
@@ -189,7 +146,11 @@ void Principal::Inscripcion(int cedula){
 	while(true){
 		Alumnos a;
 		alumnos.read((char*)&a,sizeof(Alumnos));
-		if(alumnos.eof())break;
+		if(alumnos.eof()){
+			cout<<endl<<"Alumno no encontrado . . ."<<endl;
+			system("pause");
+			break;
+		}		
 		if(a.cedula == cedula){
 			Inscritos inscrito;
 			while(true){
@@ -203,7 +164,7 @@ void Principal::Inscripcion(int cedula){
 					Materia m;
 					materias.read((char*)&m,sizeof(Materia));				
 					if(materias.eof()){
-						cout<<endl<<".....Materia no encontrada....."<<endl;
+						cout<<endl<<"Materia no encontrada . . ."<<endl;
 						break;
 					}
 					
@@ -217,7 +178,7 @@ void Principal::Inscripcion(int cedula){
 							break;
 						}
 						else if(maxUC>12){
-							cout<<endl<<"...Limite de UC Excedido..."<<endl;
+							cout<<endl<<"Limite de UC Excedido . . ."<<endl;
 							maxUC-=m.UC;
 							break;
 						}
@@ -229,7 +190,7 @@ void Principal::Inscripcion(int cedula){
 					cin>>opcion;
 					
 					if(maxUC<3 && opcion==2){
-						cout<<"Debe tener al menos 3 unidades de credito inscritas"<<endl;
+						cout<<"Debe tener al menos 3 unidades de credito inscritas . . ."<<endl;
 						opcion=3;
 					}
 					
@@ -244,8 +205,8 @@ void Principal::Inscripcion(int cedula){
 					inscritos.close();
 					
 					cout<<endl<<"Cedula: "<<inscrito.cedula<<endl<<"CodigoMaterias: "<<inscrito.codMaterias<<endl<<"Total UC: "<<inscrito.totalUC<<endl;
-					cout<<endl<<".....Inscripcion realizada Exitosamente, pulse cualquier tecla....."<<endl;
-					getch();
+					cout<<endl<<"Inscripcion realizada Exitosamente . . ."<<endl;
+					system("pause");
 					break;
 				}
 			}
@@ -268,10 +229,9 @@ void Principal::ImprimirPensum(int codigo){
 	pensum.open(cod,ios::binary | ios::in);
 	if(pensum.fail())
 	{
-		cout<<".....Carrera NO encontrada.....";
-		getch();
+		cout<<"Carrera NO encontrada . . .";
+		system("pause");
 		pensum.close();
-		exit(1);
 	}
 	else{
 		gotoxy(1,2);
@@ -298,6 +258,7 @@ void Principal::ImprimirPensum(int codigo){
 			y++;
 		}
 		marco(cod);
+		system("pause");
 	}
 }
 
@@ -318,8 +279,8 @@ void Principal::Consultar(bool alumno ){
 		while(true){
 			alum.read((char*)&a,sizeof(Alumnos));
 			if(alum.eof()){
-				cout<<".....Alumno no encontrado.....";
-				getch();
+				cout<<endl<<"Alumno no encontrado . . ."<<endl;
+				system("pause");
 				break;
 			}
 			if(a.cedula==cedula){
@@ -345,11 +306,13 @@ void Principal::Consultar(bool alumno ){
 					if(insc.eof()){
 						cout<<"Codigo de Materias: NULL"<<endl;
 						cout<<"Total UC Inscritas: NULL"<<endl<<endl;
+						system("pause");
 						break;
 					}
 					if(a.cedula == i.cedula){
 						cout<<"Codigo de Materias: "<<i.codMaterias<<endl;
 						cout<<"Total UC Inscritas: "<<i.totalUC<<endl<<endl;
+						system("pause");
 						break;
 					}
 				}
@@ -373,9 +336,9 @@ void Principal::Consultar(bool alumno ){
 		
 		mat.open(aux,ios::binary | ios::in);
 		if(mat.fail()){
-			cout<<".....Materia no Encontrada.....";
+			cout<<endl<<"Materia no Encontrada . . ."<<endl;
 			mat.close();
-			getch();
+			system("pause");
 		}
 		else{
 			while(true){
@@ -383,16 +346,21 @@ void Principal::Consultar(bool alumno ){
 				mat.read((char*)&m,sizeof(Materia));
 				if(mat.eof()) break;
 				if(m.codMateria==codigo){
-					cout<<"Materia: "<<m.nomMareria<<endl;
+					cout<<endl<<"Materia: "<<m.nomMareria<<endl;
 					cout<<"Semestre: "<<m.numSemestre<<endl;
 					cout<<"UC: "<<m.UC<<endl;
 					car.open("Carreras.dat",ios::binary | ios::in);
 					while(true){
 						Carrera c;
 						car.read((char*)&c,sizeof(Carrera));
-						if(car.eof()) break;
+						if(car.eof()){
+							cout<<"Carrera: NULL"<<endl<<endl;
+							system("pause");
+							break;
+						}
 						if(c.codigoCarrera == codigo/100){
 							cout<<"Carrera: "<<c.nombreCarrera<<endl<<endl;
+							system("pause");
 							break;
 						}
 					}
@@ -425,8 +393,8 @@ void Principal::ReporteInscripcion(int cedula){
 	while(true){
 		alumno.read((char*)&a,sizeof(Alumnos));
 		if(alumno.eof()){
-			cout<<".....Alumno no encontrado.....";
-			getch();
+			cout<<"Alumno no encontrado . . ."<<endl;
+			system("pause");
 			break;
 		}
 		if(a.cedula == cedula){
@@ -450,7 +418,7 @@ void Principal::ReporteInscripcion(int cedula){
 			while(true){
 				inscripcion.read((char*)&i,sizeof(Inscritos));
 				if(inscripcion.eof() || inscripcion==NULL){
-					cout<<"Total UC Inscritas: NULL";
+					cout<<"Total UC Inscritas: NULL"<<endl<<endl;
 					break;
 				}
 				if(a.cedula == i.cedula){
@@ -491,6 +459,7 @@ void Principal::ReporteInscripcion(int cedula){
 				}
 			}
 			inscripcion.close();
+			system("pause");
 			break;
 		}
 	}
@@ -517,16 +486,16 @@ void Principal::InscripcionMateria(int codigo){
 	
 	mat.open(file,ios::binary | ios::in);
 	if(mat.fail()){
-		cout<<".....ERROR AL ABRIR EL ARCHIVO.....";
+		cout<<"CARRERA NO ENCONTRADA . . ."<<endl;
 		mat.close();
-		getch();
+		system("pause");
 	}
 	else
 		while(true){
 			mat.read((char*)&m,sizeof(Materia));
 			if(mat.eof()){
-				cout<<".....MATERIA SIN ALUMNOS INSCRITOS....."<<endl;
-				getch();
+				cout<<"MATERIA NO ENCONTRADA . . ."<<endl;
+				system("pause");
 				break;
 			}
 			if(m.codMateria == codigo){
@@ -534,7 +503,10 @@ void Principal::InscripcionMateria(int codigo){
 				ins.open("Inscritos.dat",ios::binary | ios::in);
 				while(true){
 					ins.read((char*)&i,sizeof(Inscritos));
-					if(ins.eof()) break;
+					if(ins.eof()){
+						cout<<"MATERIA SIN ALUMNOS INSCRITOS . . ."<<endl;
+						break;
+					}
 					codMaterias = atoi(i.codMaterias);
 					aux=1;
 					while(true){
@@ -562,6 +534,7 @@ void Principal::InscripcionMateria(int codigo){
 					}
 				}
 				ins.close();
+			system("pause");
 			break;
 			}
 		}
@@ -603,7 +576,7 @@ void marco(char *archivo){
 		cout<<"|";
 	}
 	
-	gotoxy(0,cont+4);
+	gotoxy(0,cont+5);
 }
 
 void gotoxy(int x,int y){
