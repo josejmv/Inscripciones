@@ -31,54 +31,14 @@ struct Inscritos{
 
 void gotoxy(int,int);
 void Inscripcion(int);
+void Consultar(bool);
 void ImprimirPensum(int);
 void marco();
 
 int main(int argc, char** argv) {
-	
-	/*
-	int cedula;
 
-	cout<<"Ingrese la cedula de un alumno que quiera inscribir: ";
-	cin>>cedula;
-	Inscripcion(cedula);
-	*/
-	
-	
-	Inscritos i;
-	fstream file;
-	
-	file.open("Inscritos.dat",ios::binary | ios::in);
-	while(true){
-		file.read((char*)&i,sizeof(Inscritos));
-		if(file.eof())break;	
-		cout<<endl<<"Cedula: "<<i.cedula<<endl<<"CodigoMaterias: "<<i.codMaterias<<endl<<"Total UC: "<<i.totalUC<<endl;
-	}
-	
+	Inscripcion(1110);		
 
-
-/*
-	fstream file1,file2;
-	
-	file1.open("Alumnos.dat",ios::binary | ios::in);
-	
-	while(true){
-		Alumnos a;
-		file1.read((char*)&a,sizeof(Alumnos));
-		if(file1.eof()) break;
-		cout<<"Nombre: "<<a.nombre<<endl<<"Cedula: "<<a.cedula<<endl<<"CodigoCarrera: "<<a.codigoCarrera<<endl;
-		file2.open("Carreras.dat", ios::binary | ios::in);
-		while(true){
-			Carrera c;
-			file2.read((char*)&c,sizeof(Carrera));
-			if(file2.eof()) break;
-			if(a.codigoCarrera == c.codigoCarrera)
-				cout<<"NombreCarrera: "<<c.nombreCarrera<<endl<<endl;
-		}
-		file2.close();
-	}
-	file1.close();
-*/	
 	return 0;
 }
 
@@ -115,7 +75,11 @@ void Inscripcion(int cedula){
 				while(true){
 					Materia m;
 					materias.read((char*)&m,sizeof(Materia));				
-					if(materias.eof()) break;
+					if(materias.eof()){
+						cout<<endl<<".....Materia no encontrada....."<<endl;
+						break;
+					}
+					
 					if(m.codMateria%100 == materia){
 						itoa(materia,mat,10);
 						maxUC+=m.UC;
@@ -169,33 +133,38 @@ void ImprimirPensum(int codigo){
 	itoa(codigo,cod,10);
 	strcat(cod, ".dat");
 	pensum.open(cod,ios::binary | ios::in);
-	
-	
-	gotoxy(1,2);
-	cout<<"Semestre";
-	gotoxy(11,2);
-	cout<<"Codigo";
-	gotoxy(30,2);
-	cout<<"Materia";
-	gotoxy(55,2);
-	cout<<"Unidades de Credito";
-	
-	while(true){
-		Materia mat;
-		pensum.read((char*)&mat,sizeof(Materia));
-		if(pensum.eof()) break;
-		gotoxy(5,y);
-		cout<<mat.numSemestre;
-		gotoxy(11,y);
-		cout<<mat.codMateria;
-		gotoxy(22,y);
-		cout<<mat.nomMareria;
-		gotoxy(65,y);
-		cout<<mat.UC;
-		y++;
+	if(pensum.fail())
+	{
+		cout<<".....Carrera NO encontrada.....";
+		getch();
 	}
-	marco();
-	gotoxy(0,48);
+	else{
+		gotoxy(1,2);
+		cout<<"Semestre";
+		gotoxy(11,2);
+		cout<<"Codigo";
+		gotoxy(30,2);
+		cout<<"Materia";
+		gotoxy(55,2);
+		cout<<"Unidades de Credito";
+		
+		while(true){
+			Materia mat;
+			pensum.read((char*)&mat,sizeof(Materia));
+			if(pensum.eof()) break;
+			gotoxy(5,y);
+			cout<<mat.numSemestre;
+			gotoxy(11,y);
+			cout<<mat.codMateria;
+			gotoxy(22,y);
+			cout<<mat.nomMareria;
+			gotoxy(65,y);
+			cout<<mat.UC;
+			y++;
+		}
+		marco();
+		gotoxy(0,48);
+	}
 }
 
 void marco(){
@@ -227,4 +196,107 @@ void gotoxy(int x,int y){
 	dwpos.X=x;
 	dwpos.Y=y;
 	SetConsoleCursorPosition(hcon,dwpos);
+}
+
+void Consultar(bool alumno ){
+	system("cls");
+	int cedula;
+	int codigo;
+	
+	if(alumno){	
+		fstream alum,insc,car;
+		Alumnos a;
+		Inscritos i;
+		Carrera c;
+
+		alum.open("Alumnos.dat",ios::binary | ios::in);
+		cout<<"ingrese la cedula del alumno: ";
+		cin>>cedula;
+		while(true){
+			alum.read((char*)&a,sizeof(Alumnos));
+			if(alum.eof()){
+				cout<<".....Alumno no encontrado.....";
+				getch();
+			}
+			if(a.cedula==cedula){
+				cout<<endl<<"Informacion del Alumno: "<<endl<<endl;
+				cout<<"Cedula: "<<a.cedula<<endl;
+				cout<<"Nombre: "<<a.nombre<<endl;
+				car.open("Carreras.dat",ios::binary | ios::in);		
+				while(true){
+					car.read((char*)&c,sizeof(Carrera));
+					if(car.eof()){
+						cout<<"Carrera: NULL"<<endl;
+						break;
+					}
+					if(a.codigoCarrera == c.codigoCarrera){
+						cout<<"Carrera: "<<c.nombreCarrera<<endl;
+						break;
+					}
+				}
+				car.close();
+				insc.open("Inscritos.dat",ios::binary | ios::in);
+				while(true){
+					insc.read((char*)&i,sizeof(Inscritos));
+					if(insc.eof()){
+						cout<<"Codigo de Materias: NULL"<<endl;
+						cout<<"Total UC Inscritas: NULL"<<endl<<endl;
+						break;
+					}
+					if(a.cedula == i.cedula){
+						cout<<"Codigo de Materias: "<<i.codMaterias<<endl;
+						cout<<"Total UC Inscritas: "<<i.totalUC<<endl<<endl;
+						break;
+					}
+				}
+				insc.close();
+				break;
+			}
+		}	
+		alum.close();	
+	}else{
+		
+		int codigoAux;
+		char aux[10];
+		fstream mat,car;
+		
+		cout<<"ingrese el codigo de la materia: ";
+		cin>>codigo;
+		codigoAux=codigo;
+		codigoAux/=100;
+		itoa(codigoAux,aux,10);
+		strcat(aux,".dat");
+		
+		mat.open(aux,ios::binary | ios::in);
+		if(mat.fail()){
+			cout<<".....Materia no Encontrada.....";
+			mat.close();
+			getch();
+		}
+		else{
+			while(true){
+				Materia m;
+				mat.read((char*)&m,sizeof(Materia));
+				if(mat.eof()) break;
+				if(m.codMateria==codigo){
+					cout<<"Materia: "<<m.nomMareria<<endl;
+					cout<<"Semestre: "<<m.numSemestre<<endl;
+					cout<<"UC: "<<m.UC<<endl;
+					car.open("Carreras.dat",ios::binary | ios::in);
+					while(true){
+						Carrera c;
+						car.read((char*)&c,sizeof(Carrera));
+						if(car.eof()) break;
+						if(c.codigoCarrera == codigo/100){
+							cout<<"Carrera: "<<c.nombreCarrera<<endl<<endl;
+							break;
+						}
+					}
+					car.close();
+					break;
+				}
+			}
+			mat.close();
+		}
+	}	
 }
