@@ -580,10 +580,7 @@ void Menu::InscripcionMateria(int codigo){
 				}
 				while(true){
 					ins.read((char*)&i,sizeof(Inscritos));
-					if(ins.eof()){
-						cout<<"MATERIA SIN ALUMNOS INSCRITOS . . ."<<endl;
-						break;
-					}
+					if(ins.eof()) break;
 					codMaterias = atoi(i.codMaterias);
 					aux=1;
 					while(true){
