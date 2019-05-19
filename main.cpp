@@ -34,13 +34,14 @@ class Principal{
 	void Agregar(bool);
 	void Inscripcion(int);
 	void ImprimirPensum(int);
+	void ListaAlumnos();
 	void Consultar(bool);
 	void ReporteInscripcion(int);
 	void InscripcionMateria(int);
 };
 
 void gotoxy(int,int);
-void marco(char*);
+void marco(char*,int);
 
 int main(int argc, char** argv) {
 	int cedula;
@@ -52,7 +53,7 @@ int main(int argc, char** argv) {
 	return 0;
 }
 
-void Principal::Agregar(bool alumno ){ //FUNCION DE AGREGAR ALUMNO O MATERIA
+void Principal::Agregar(bool alumno ){
 	fstream file1;
 	
 	if(alumno){
@@ -257,7 +258,7 @@ void Principal::ImprimirPensum(int codigo){
 			cout<<mat.UC;
 			y++;
 		}
-		marco(cod);
+		marco(cod,2);
 		system("pause");
 	}
 }
@@ -540,43 +541,126 @@ void Principal::InscripcionMateria(int codigo){
 		}
 }
 
-void marco(char *archivo){
+void Principal::ListaAlumnos(){
+	
+	system("cls");
+	
+	fstream alumnos;
+	int y=4;
+	
+	alumnos.open("Alumnos.dat",ios::binary | ios::in);
+	if(alumnos.fail())
+	{
+		cout<<"ERROR AL ABRIR EL ARCHIVO ALUMNOS . . .";
+		system("pause");
+		alumnos.close();
+	}
+	else{
+		gotoxy(1,2);
+		cout<<"cedula";
+		gotoxy(12,2);
+		cout<<"Codigo";
+		gotoxy(30,2);
+		cout<<"Nombre";
+		
+		while(true){
+			Alumnos alum;
+			alumnos.read((char*)&alum,sizeof(Alumnos));
+			if(alumnos.eof()) break;
+			gotoxy(2,y);
+			cout<<alum.cedula;
+			gotoxy(13,y);
+			cout<<alum.codigoCarrera;
+			gotoxy(22,y);
+			cout<<alum.nombre;
+			y++;
+			if(y==50){
+				marco("Alumnos.dat",1);
+				gotoxy(0,y+3);
+				cout<<"Pulse cualquier tecla para continuar"<<endl;
+				getch();
+				system("cls");
+				y=4;
+				
+				gotoxy(1,2);
+				cout<<"cedula";
+				gotoxy(12,2);
+				cout<<"Codigo";
+				gotoxy(30,2);
+				cout<<"Nombre";
+			}
+		}
+		marco("Alumnos.dat",1);
+		system("pause");
+	}
+		
+}
+
+void marco(char *archivo,int caso){
 	
 	fstream file;
 	int cont=0;
 	
 	Materia m;
-	Carrera c;
+	Alumnos a;
 	
-	file.open(archivo,ios::binary | ios::in);
-	while(true){
-		file.read((char*)&m,sizeof(Materia));
-		if(file.eof()) break;
-		cont++;
+	if(caso==2){	
+		file.open(archivo,ios::binary | ios::in);
+		while(true){
+			file.read((char*)&m,sizeof(Materia));
+			if(file.eof()) break;
+			cont++;
+		}
+	
+		for(int i=0;i<cont+2;i++){
+			gotoxy(0,i+2);
+			cout<<"|";
+		}
+		for(int i=0;i<cont+2;i++){
+			gotoxy(10,i+2);
+			cout<<"|";
+		}
+		for(int i=0;i<cont+2;i++){
+			gotoxy(20,i+2);
+			cout<<"|";
+		}
+		for(int i=0;i<cont+2;i++){
+			gotoxy(54,i+2);
+			cout<<"|";
+		}
+		for(int i=0;i<cont+2;i++){
+			gotoxy(74,i+2);
+			cout<<"|";
+		}
+		gotoxy(0,cont+5);
 	}
-
-	for(int i=0;i<cont+2;i++){
-		gotoxy(0,i+2);
-		cout<<"|";
-	}
-	for(int i=0;i<cont+2;i++){
-		gotoxy(10,i+2);
-		cout<<"|";
-	}
-	for(int i=0;i<cont+2;i++){
-		gotoxy(20,i+2);
-		cout<<"|";
-	}
-	for(int i=0;i<cont+2;i++){
-		gotoxy(54,i+2);
-		cout<<"|";
-	}
-	for(int i=0;i<cont+2;i++){
-		gotoxy(74,i+2);
-		cout<<"|";
+	else{
+		file.open(archivo,ios::binary | ios::in);
+		while(true){
+			file.read((char*)&a,sizeof(Alumnos));
+			if(file.eof()) break;
+			cont++;
+			if(cont==46) break;
+		}
+		for(int i=0;i<cont+2;i++){
+			gotoxy(0,i+2);
+			cout<<"|";
+		}
+		for(int i=0;i<cont+2;i++){
+			gotoxy(10,i+2);
+			cout<<"|";
+		}
+		for(int i=0;i<cont+2;i++){
+			gotoxy(20,i+2);
+			cout<<"|";
+		}
+		for(int i=0;i<cont+2;i++){
+			gotoxy(44,i+2);
+			cout<<"|";
+		}
+		gotoxy(0,cont+4);
 	}
 	
-	gotoxy(0,cont+5);
 }
 
 void gotoxy(int x,int y){
