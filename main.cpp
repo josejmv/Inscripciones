@@ -29,19 +29,34 @@ struct Inscritos{
 	int totalUC;
 };
 
+class Principal{
+	public:
+	void Agregar(bool alumno);
+	void Inscripcion(int cedula);
+	void ImprimirPensum(int codigo);
+	void Consultar(bool alumno);
+	void ReporteInscripcion(int cedula);
+	void InscripcionMateria(int codigo);
+};
+
 void gotoxy(int,int);
 void Inscripcion(int);
 void Consultar(bool);
 void ReporteInscripcion(int);
 void InscripcionMateria(int);
 void ImprimirPensum(int);
-void marco();
+void marco(char*);
 
 int main(int argc, char** argv) {
-	
 	int cedula;
 	int codigo;
 	int opcion;
+
+	Principal p;
+	p.ImprimirPensum(46112);
+	
+//	marco("46112.dat");
+	
 
 /*
 //	LISTA DE ALUMNOS INSCRITOS EN UNA MATERIA LISTO
@@ -96,8 +111,66 @@ int main(int argc, char** argv) {
 	return 0;
 }
 
+void Principal::Agregar(bool alumno ){ //FUNCION DE AGREGAR ALUMNO O MATERIA
+	fstream file1;
+	
+	if(alumno){
+		
+		Alumnos a;		
+		file1.open("Alumnos.dat",ios::binary | ios::app);
+		
+		cout<<"ingrese la cedula del alumno"<<endl;
+		cin>>a.cedula;
+		cout<<"ingrese el nombre del alumno"<<endl;
+		fflush(stdin);
+		gets(a.nombre);
+		cout<<"ingrese el codigo de la carrera del alumno"<<endl;
+		cin>>a.codigoCarrera;
+		file1.write((char*)&a,sizeof(Alumnos));
+		file1.close();
+	}else{
+		int codigo;
+		Materia m;
+		fstream file2;
+		fstream file3;
+		char aux[50];
+		
+		file2.open("Carreras.dat", ios::binary | ios::in);		
+		cout<<"ingrese el codigo de la carrera: ";
+		cin>>codigo;
+		itoa(codigo,aux,10);
+		strcat(aux,".dat");
+		while(true){
+			Carrera c;
+			
+			file2.read((char*)&c,sizeof(Carrera));
+			if(file2.eof()){
+				cout<<".....Esta carrera no existe, no se puede inscribir la materia....."<<endl;
+				getch();
+				break;
+			}
+			if(c.codigoCarrera == codigo){
+				file3.open(aux,ios::binary | ios::app);
+				cout<<"ingrese el numero de semestre de la materia: ";
+				cin>>m.numSemestre;
+				cout<<"ingrese el codigo de la materia: ";
+				cin>>m.codMateria;
+				cout<<"ingrese el nombre de la materia: ";
+				fflush(stdin);
+				cin>>m.nomMareria;
+				cout<<"ingrese el numero de UC: ";
+				cin>>m.UC;
+								
+				file3.write((char*)&m,sizeof(Materia));
+				file3.close();
+				break;
+			}
+		}
+		file2.close();		
+	}	
+}
 
-void Inscripcion(int cedula){
+void Principal::Inscripcion(int cedula){
 	
 	int materia;
 	char mat[3];
@@ -181,14 +254,14 @@ void Inscripcion(int cedula){
 	}	
 }
 
-void ImprimirPensum(int codigo){
+void Principal::ImprimirPensum(int codigo){
 	
 	system("cls");
 	
 	fstream pensum;
 	int y=4;
 	
-	char cod[4];
+	char cod[10];
 	
 	itoa(codigo,cod,10);
 	strcat(cod, ".dat");
@@ -224,12 +297,11 @@ void ImprimirPensum(int codigo){
 			cout<<mat.UC;
 			y++;
 		}
-		marco();
-		gotoxy(0,48);
+		marco(cod);
 	}
 }
 
-void Consultar(bool alumno ){
+void Principal::Consultar(bool alumno ){
 	system("cls");
 	int cedula;
 	int codigo;
@@ -333,7 +405,7 @@ void Consultar(bool alumno ){
 	}	
 }
 
-void ReporteInscripcion(int cedula){	
+void Principal::ReporteInscripcion(int cedula){	
 	system("cls");
 	
 	char archivo[10];
@@ -426,7 +498,7 @@ void ReporteInscripcion(int cedula){
 
 }
 
-void InscripcionMateria(int codigo){
+void Principal::InscripcionMateria(int codigo){
 
 	int codCarrera;
 	char file[11];
@@ -495,27 +567,43 @@ void InscripcionMateria(int codigo){
 		}
 }
 
-void marco(){
-	for(int i=0;i<42;i++){
+void marco(char *archivo){
+	
+	fstream file;
+	int cont=0;
+	
+	Materia m;
+	Carrera c;
+	
+	file.open(archivo,ios::binary | ios::in);
+	while(true){
+		file.read((char*)&m,sizeof(Materia));
+		if(file.eof()) break;
+		cont++;
+	}
+
+	for(int i=0;i<cont+2;i++){
 		gotoxy(0,i+2);
 		cout<<"|";
 	}
-	for(int i=0;i<42;i++){
+	for(int i=0;i<cont+2;i++){
 		gotoxy(10,i+2);
 		cout<<"|";
 	}
-	for(int i=0;i<42;i++){
+	for(int i=0;i<cont+2;i++){
 		gotoxy(20,i+2);
 		cout<<"|";
 	}
-	for(int i=0;i<42;i++){
+	for(int i=0;i<cont+2;i++){
 		gotoxy(54,i+2);
 		cout<<"|";
 	}
-	for(int i=0;i<42;i++){
+	for(int i=0;i<cont+2;i++){
 		gotoxy(74,i+2);
 		cout<<"|";
 	}
+	
+	gotoxy(0,cont+4);
 }
 
 void gotoxy(int x,int y){
