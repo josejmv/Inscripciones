@@ -36,55 +36,23 @@ void Menu::menu(){
 	while(opcion<0 || opcion>9){
 	system("cls");
 	cout<<".....BIENVENIDO....."<<endl<<endl;
-	cout<<"1. Agregar Alumno"<<endl;
-	cout<<"2. Agregar Materia"<<endl;
-	cout<<"3. Consultar Alumno"<<endl;
-	cout<<"4. Consultar Materia"<<endl;
-	cout<<"5. Imprimir Pensum"<<endl;
-	cout<<"6. Imprimir Lista de Alumnos"<<endl;
-	cout<<"7. Inscribir Alumno"<<endl;
-	cout<<"8. Reporte de Inscripcion"<<endl;
-	cout<<"9. Reporte de Inscritos en Materia"<<endl;
+	cout<<"1. Inscribir Alumno"<<endl;
+	cout<<"2. Consultar Alumno"<<endl;
+	cout<<"3. Consultar Materia"<<endl;
+	cout<<"4. Reporte de Inscripcion de Alumnos"<<endl;
+	cout<<"5. Reporte de Inscritos en Materia"<<endl;
+	cout<<"6. Registrar Alumno a data"<<endl;
+	cout<<"7. Registrar Materia a data"<<endl;
+	cout<<"8. Imprimir Pensum"<<endl;
+	cout<<"9. Imprimir Lista de Alumnos"<<endl;
 	cout<<"0. SALIR"<<endl<<endl;
 	cout<<"OPCION: ";
 	cin>>opcion;
 	}
 	
 	switch(opcion){
+		
 		case 1:{
-			system("cls");
-			Agregar(true);
-			break;
-		}
-		case 2:{
-			system("cls");
-			Agregar(false);
-			break;
-		}
-		case 3:{
-			system("cls");
-			Consultar(true);
-			break;
-		}
-		case 4:{
-			system("cls");
-			Consultar(false);
-			break;
-		}
-		case 5:{
-			int codigo;
-			system("cls");
-			cout<<"Ingrese el codigo de la carrera: ";
-			cin>>codigo;
-			ImprimirPensum(codigo);
-			break;
-		}
-		case 6:{
-			system("cls");
-			ListaAlumnos();
-			break;
-		}
-		case 7:{
 			system("cls");
 			int cedula;
 			cout<<"Ingrese la cedula del alumno a inscribir: ";
@@ -92,7 +60,17 @@ void Menu::menu(){
 			Inscripcion(cedula);
 			break;
 		}
-		case 8:{
+		case 2:{
+			system("cls");
+			Consultar(true);
+			break;
+		}
+		case 3:{
+			system("cls");
+			Consultar(false);
+			break;
+		}
+		case 4:{
 			system("cls");
 			int cedula;
 			cout<<"Ingrese la cedula del alumno: ";
@@ -100,12 +78,35 @@ void Menu::menu(){
 			ReporteInscripcion(cedula);
 			break;
 		}
-		case 9:{
+		case 5:{
 			system("cls");
 			int codigo;
-			cout<<"Ingrese el codigo de la materia: ";
+			cout<<"Ingrese el codigo de la materia (6 Digitos): ";
 			cin>>codigo;
 			InscripcionMateria(codigo);
+			break;
+		}
+		case 6:{
+			system("cls");
+			Agregar(true);
+			break;
+		}
+		case 7:{
+			system("cls");
+			Agregar(false);
+			break;
+		}
+		case 8:{
+			int codigo;
+			system("cls");
+			cout<<"Ingrese el codigo de la carrera: ";
+			cin>>codigo;
+			ImprimirPensum(codigo);
+			break;
+		}
+		case 9:{
+			system("cls");
+			ListaAlumnos();
 			break;
 		}
 		default:{
@@ -116,9 +117,9 @@ void Menu::menu(){
 }
 
 void Menu::Agregar(bool alumno ){
-	fstream file1;
 	
 	if(alumno){
+		fstream file1;
 		
 		Alumnos a;		
 		file1.open("Alumnos.dat",ios::binary | ios::app);
@@ -166,7 +167,7 @@ void Menu::Agregar(bool alumno ){
 				file3.open(aux,ios::binary | ios::app);
 				cout<<"ingrese el numero de semestre de la materia: ";
 				cin>>m.numSemestre;
-				cout<<"ingrese el codigo de la materia: ";
+				cout<<"ingrese el codigo de la materia (2 Digitos): ";
 				cin>>codMateria;
 				itoa(codMateria,aux3,10);
 				strcat(cod,aux2);
@@ -201,7 +202,6 @@ void Menu::Inscripcion(int cedula){
 	int opcion;
 	
 	fstream alumnos;
-	fstream carrera;
 	fstream materias;
 	fstream inscritos;
 	
@@ -218,7 +218,7 @@ void Menu::Inscripcion(int cedula){
 		if(a.cedula == cedula){
 			Inscritos inscrito;
 			while(true){
-				cout<<endl<<"En que materia desea Inscribir al alumno "<<a.nombre<<endl<<"Materia: ";
+				cout<<endl<<"Ingrese el codigo de la materia a inscribir (2 Digitos): ";
 				strcpy(mat,"");
 				cin>>materia;
 				itoa(a.codigoCarrera,cod,10);
@@ -277,6 +277,7 @@ void Menu::Inscripcion(int cedula){
 			break;
 		}
 	}
+	alumnos.close();
 	menu();	
 }
 
@@ -325,6 +326,7 @@ void Menu::ImprimirPensum(int codigo){
 		marco(cod,2);
 		system("pause");
 	}
+	pensum.close();
 	menu();
 }
 
@@ -398,7 +400,7 @@ void Menu::Consultar(bool alumno ){
 		char aux[10];
 		fstream mat,car;
 		
-		cout<<"ingrese el codigo de la materia: ";
+		cout<<"ingrese el codigo de la materia (6 Digitos): ";
 		cin>>codigo;
 		codigoAux=codigo;
 		codigoAux/=100;
@@ -612,6 +614,7 @@ void Menu::InscripcionMateria(int codigo){
 			break;
 			}
 		}
+		mat.close();
 	menu();
 }
 
@@ -620,6 +623,7 @@ void Menu::ListaAlumnos(){
 	system("cls");
 	
 	fstream alumnos;
+	char salir;
 	int y=4;
 	
 	alumnos.open("Alumnos.dat",ios::binary | ios::in);
@@ -640,7 +644,11 @@ void Menu::ListaAlumnos(){
 		while(true){
 			Alumnos alum;
 			alumnos.read((char*)&alum,sizeof(Alumnos));
-			if(alumnos.eof()) break;
+			if(alumnos.eof()){
+				marco("Alumnos.dat",1);
+				system("pause");
+				break;
+			}
 			gotoxy(2,y);
 			cout<<alum.cedula;
 			gotoxy(13,y);
@@ -650,10 +658,14 @@ void Menu::ListaAlumnos(){
 			y++;
 			if(y==50){
 				marco("Alumnos.dat",1);
-				gotoxy(0,y+3);
-				cout<<"Pulse cualquier tecla para continuar"<<endl;
-				getch();
+				gotoxy(0,y);
+				cout<<"  .\n  .\n  ."<<endl<<endl<<"Pulse 0 para Volver al menu"<<endl;
+				fflush(stdin);
+				salir = getch();
+				if(salir == '0')
+					break;
 				system("cls");
+				
 				y=4;
 				
 				gotoxy(1,2);
@@ -664,13 +676,12 @@ void Menu::ListaAlumnos(){
 				cout<<"Nombre";
 			}
 		}
-		marco("Alumnos.dat",1);
-		system("pause");
+		alumnos.close();
 	}
 	menu();	
 }
 
-void Menu::marco(char *archivo,int caso){
+void Menu::marco(char *archivo, int caso){
 	
 	fstream file;
 	int cont=0;
